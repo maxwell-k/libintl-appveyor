@@ -1,0 +1,32 @@
+version: "{build}"
+
+environment:
+  msys2: msys2-base-x86_64-20150512.tar
+  mirrors: pacman-mirrors-20150722-1-any.pkg.tar.xz
+
+install:
+  - "appveyor DownloadFile \
+    http://downloads.sourceforge.net/project/msys2/Base/x86_64/%msys2%.xz"
+  - 7z x %msys2%.xz > nul
+  - 7z x -oC:\ %msys2% > nul
+  - del %msys2%.xz
+  - appveyor DownloadFile http://repo.msys2.org/msys/x86_64/%mirrors%
+  - set MSYSTEM=MSYS2
+  - set sh=C:\msys64\usr\bin\sh --login -c
+  - set HOME=/c/projects/%APPVEYOR_PROJECT_NAME%
+  - '%sh% "true" > nul 2> nul' # first run
+  - '%sh% "pacman --upgrade --noconfirm %mirrors%" >nul 2>nul'
+  - del %mirrors%
+  - '%sh% "pacman -S --noconfirm --refresh --sysupgrade" > nul 2> nul'
+  - '%sh% "pacman -S --needed --noconfirm base-devel" > nul 2> nul'
+  - '%sh% "pacman -S --needed --noconfirm mingw-w64-x86_64-gcc" > nul 2> nul'
+  - set MSYSTEM=
+
+build_script:
+  - set MSYSTEM=MINGW64
+  - '%sh% "make --version"'
+  - set MSYSTEM=
+# - ps: "$blockRdp = $true;\
+#     iex ((new-object net.webclient).DownloadString((\
+#     'https://raw.githubusercontent.com/appveyor/ci/master/scripts/\
+#     enable-rdp.ps1')))"
