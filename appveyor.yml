@@ -1,21 +1,23 @@
-version: "{build}"
+version: "0.19.5.1.{build}"
 
 environment:
-  msys2: msys2-base-x86_64-20150512.tar
+  gettext: gettext-0.19.5.1
   mirrors: pacman-mirrors-20150722-1-any.pkg.tar.xz
+  msys2: msys2-base-x86_64-20150512.tar
 
 install:
   - "appveyor DownloadFile \
     http://downloads.sourceforge.net/project/msys2/Base/x86_64/%msys2%.xz"
   - 7z x %msys2%.xz > nul
   - 7z x -oC:\ %msys2% > nul
-  - del %msys2%.xz
+  - del %msys2%.xz %msys2%
   - appveyor DownloadFile http://repo.msys2.org/msys/x86_64/%mirrors%
   - set MSYSTEM=MSYS2
   - set sh=C:\msys64\usr\bin\sh --login -c
-  - set HOME=/c/projects/%APPVEYOR_PROJECT_NAME%
   - '%sh% "true" > nul 2> nul' # first run
-  - '%sh% "pacman --upgrade --noconfirm %mirrors%" >nul 2>nul'
+  - >
+      %sh% "cd $APPVEYOR_BUILD_FOLDER &&
+      pacman --upgrade --noconfirm %mirrors%" >nul 2>nul'
   - del %mirrors%
   - '%sh% "pacman -S --noconfirm --refresh --sysupgrade" > nul 2> nul'
   - '%sh% "pacman -S --needed --noconfirm base-devel" > nul 2> nul'
@@ -23,10 +25,29 @@ install:
   - set MSYSTEM=
 
 build_script:
+  - appveyor DownloadFile http://ftp.gnu.org/pub/gnu/gettext/%gettext%.tar.xz
+  - 7z x %gettext%.tar.xz > nul
+  - 7z x %gettext%.tar > nul
+  - del %gettext%.tar.xz %gettext%.tar
   - set MSYSTEM=MINGW64
-  - '%sh% "make --version"'
+  - >
+      %sh% "exec 0</dev/null &&
+      cd $APPVEYOR_BUILD_FOLDER/$gettext/gettext-runtime &&
+      ./configure &&
+      cd intl &&
+      make" > nul 2> nul'
+  - >
+      %sh% "exec 0</dev/null &&
+      cd $APPVEYOR_BUILD_FOLDER/$gettext/gettext-runtime/intl/.libs &&
+      openssl sha1 libintl-8.dll | tee libintl-8.dll.sha1"
   - set MSYSTEM=
-# - ps: "$blockRdp = $true;\
-#     iex ((new-object net.webclient).DownloadString((\
-#     'https://raw.githubusercontent.com/appveyor/ci/master/scripts/\
-#     enable-rdp.ps1')))"
+
+artifacts:
+  - path: $(gettext)\gettext-runtime\intl\.libs\libintl-8.dll
+  - path: $(gettext)\gettext-runtime\intl\.libs\libintl-8.dll.sha1
+
+on_failure:
+  - ps: "$blockRdp = $true;\
+      iex ((new-object net.webclient).DownloadString((\
+      'https://raw.githubusercontent.com/appveyor/ci/master/scripts/\
+      enable-rdp.ps1')))"
