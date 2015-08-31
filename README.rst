@@ -18,3 +18,7 @@ References
 -   `msys2_shell.bat, profile and other relevant files
     <https://github.com/Alexpux/MSYS2-packages/blob/master/filesystem/>`__
 -   `YAML specification <http://yaml.org/spec/1.1/>`__
+-   `Workaround for bad file descriptor configure / make problem
+    <http://help.appveyor.com/discussions/problems/
+    912-problem-building-mono-with-cygwin-inputoutput-redirection
+    #comment_34994866>`__
