@@ -1,53 +1,66 @@
 version: "0.19.5.1.{build}"
 
+skip_tags: true
+
 environment:
   gettext: gettext-0.19.5.1
-  mirrors: pacman-mirrors-20150722-1-any.pkg.tar.xz
+  mirrors: pacman-mirrors-20150722-2-any.pkg.tar.xz
   msys2: msys2-base-x86_64-20150512.tar
 
+cache:
+  - '%gettext%.tar'
+  - '%msys2%'
+  - '%mirrors%'
+  - C:\msys64\var\cache\pacman\pkg
+
+init: # Simplify the PATH variable
+  - "set PATH=%SystemRoot%\\system32;%SystemRoot%;\
+    %SystemRoot%\\System32\\Wbem;\
+    C:\\Program Files\\7-Zip;\
+    C:\\Program Files (x86)\\Git\\cmd;\
+    C:\\Program Files\\AppVeyor\\BuildAgent"
+
 install:
-  - "appveyor DownloadFile \
-    http://downloads.sourceforge.net/project/msys2/Base/x86_64/%msys2%.xz"
-  - 7z x %msys2%.xz > nul
-  - 7z x -oC:\ %msys2% > nul
-  - del %msys2%.xz %msys2%
-  - appveyor DownloadFile http://repo.msys2.org/msys/x86_64/%mirrors%
-  - set MSYSTEM=MSYS2
-  - set sh=C:\msys64\usr\bin\sh --login -c
-  - '%sh% "true" > nul 2> nul' # first run
-  - >
-      %sh% "cd $APPVEYOR_BUILD_FOLDER &&
-      pacman --upgrade --noconfirm %mirrors%" >nul 2>nul'
-  - del %mirrors%
-  - '%sh% "pacman -S --noconfirm --refresh --sysupgrade" > nul 2> nul'
-  - '%sh% "pacman -S --needed --noconfirm base-devel" > nul 2> nul'
-  - '%sh% "pacman -S --needed --noconfirm mingw-w64-x86_64-gcc" > nul 2> nul'
+  - .\msys2.bat
+  - "if not exist %gettext%.tar (
+      appveyor DownloadFile
+      http://ftp.gnu.org/pub/gnu/gettext/%gettext%.tar.xz &&
+      7z x %gettext%.tar.xz > nul &&
+      del %gettext%.tar.xz
+    )"
+
+build_script: # extract and build parts of gettext
+  - 7z x %gettext%.tar > nul
+  - set MSYSTEM=MINGW64
+  - "C:\\msys64\\usr\\bin\\sh --login -c >nul 2>&1 \"exec 0</dev/null &&
+      cd $APPVEYOR_BUILD_FOLDER/$gettext &&
+      ./configure &&
+      make -C gettext-runtime/intl
+    \""
   - set MSYSTEM=
 
-build_script:
-  - appveyor DownloadFile http://ftp.gnu.org/pub/gnu/gettext/%gettext%.tar.xz
-  - 7z x %gettext%.tar.xz > nul
-  - 7z x %gettext%.tar > nul
-  - del %gettext%.tar.xz %gettext%.tar
-  - set MSYSTEM=MINGW64
-  - >
-      %sh% "exec 0</dev/null &&
-      cd $APPVEYOR_BUILD_FOLDER/$gettext/gettext-runtime &&
-      ./configure &&
-      cd intl &&
-      make" > nul 2> nul'
-  - >
-      %sh% "exec 0</dev/null &&
-      cd $APPVEYOR_BUILD_FOLDER/$gettext/gettext-runtime/intl/.libs &&
-      openssl sha1 libintl-8.dll | tee libintl-8.dll.sha1"
-  - set MSYSTEM=
+after_build: # package libintl-8.dll
+  - "C:\\msys64\\usr\\bin\\sh --login -c \"
+      cd $APPVEYOR_BUILD_FOLDER &&
+      cp ${gettext}/gettext-runtime/intl/.libs/libintl-8.dll . &&
+      > sha1.txt openssl sha1 libintl-8.dll
+    \""
 
 artifacts:
-  - path: $(gettext)\gettext-runtime\intl\.libs\libintl-8.dll
-  - path: $(gettext)\gettext-runtime\intl\.libs\libintl-8.dll.sha1
+  - path: libintl-8.dll
+  - path: sha1.txt
 
 on_failure:
-  - ps: "$blockRdp = $true;\
-      iex ((new-object net.webclient).DownloadString((\
+  - ps: "$blockRdp = $true; iex ((new-object net.webclient).DownloadString((\
       'https://raw.githubusercontent.com/appveyor/ci/master/scripts/\
       enable-rdp.ps1')))"
+
+deploy:
+  release: $(APPVEYOR_BUILD_VERSION)
+  description: "[AppVeyor build](https://ci.appveyor.com/project/\
+    $(APPVEYOR_REPO_NAME)/build/$(APPVEYOR_BUILD_VERSION))"
+  provider: GitHub
+  draft: true
+  on: { appveyor_repo_tag: false }
+  auth_token:
+    secure: qty+OleXdcHipnzD0RGUfPbTpe5Q9WtPvIknOFhkaIzQ28ccEsMU1mKSKQ2lnLUn
