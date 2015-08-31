@@ -4,6 +4,7 @@ environment:
   gettext: gettext-0.19.5.1
   mirrors: pacman-mirrors-20150722-1-any.pkg.tar.xz
   msys2: msys2-base-x86_64-20150512.tar
+  
 
 install:
   - "appveyor DownloadFile \
@@ -39,15 +40,29 @@ build_script:
   - >
       %sh% "exec 0</dev/null &&
       cd $APPVEYOR_BUILD_FOLDER/$gettext/gettext-runtime/intl/.libs &&
-      openssl sha1 libintl-8.dll | tee libintl-8.dll.sha1"
+      openssl sha1 libintl-8.dll | tee libintl-8.dll.sha1 &&
+      mv libintl-8.dll libintl-8.dll.sha1 $APPVEYOR_BUILD_FOLDER"
   - set MSYSTEM=
 
 artifacts:
-  - path: $(gettext)\gettext-runtime\intl\.libs\libintl-8.dll
-  - path: $(gettext)\gettext-runtime\intl\.libs\libintl-8.dll.sha1
+  - path: libintl-8.dll
+  - path: libintl-8.dll.sha1
 
 on_failure:
   - ps: "$blockRdp = $true;\
       iex ((new-object net.webclient).DownloadString((\
       'https://raw.githubusercontent.com/appveyor/ci/master/scripts/\
       enable-rdp.ps1')))"
+
+deploy:
+    release: $(APPVEYOR_BUILD_VERSION)
+    description: "[AppVeyor build](https://ci.appveyor.com/project/\
+      $(APPVEYOR_REPO_NAME)/build/$(APPVEYOR_BUILD_VERSION))"
+    provider: GitHub
+    artifact: libintl-8.dll,libintl-8.dll.sha1
+    draft: true
+    on:
+        appveyor_repo_tag: false
+    auth_token:
+        secure: >
+            qty+OleXdcHipnzD0RGUfPbTpe5Q9WtPvIknOFhkaIzQ28ccEsMU1mKSKQ2lnLUn
