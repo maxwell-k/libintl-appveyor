@@ -1,17 +1,27 @@
+64 bit libintl-8.dll
+--------------------
+
+.. image::
+   https://ci.appveyor.com/api/projects/status/t0scst2ne8uwnnlo?svg=true
+   :width: 300
+   :target: https://ci.appveyor.com/project/maxwell-k/libintl-appveyor
+   :alt: Appveyor build status
+
+A version of ``libintl-8.dll`` compiled using MSYS2 / MINGW on 64 bit
+Windows provided by AppVeyor.
+
 References
 ----------
 
+-   `appveyor.yml reference
+    <http://www.appveyor.com/docs/appveyor-yml>`__
 -   `MSYS2 introduction
     <http://sourceforge.net/p/msys2/wiki/MSYS2%20introduction/>`__
 -   `pacman man page
     <https://www.archlinux.org/pacman/pacman.8.html>`__
 -   `Support request
-    <http://help.appveyor.com/discussions/suggestions/615-support-for-msys2>`__
--   `Mingw w64 example
-    <http://github.com/rust-gnome/examples/blob/master/appveyor.yml#L31>`__
--   `Stackoverflow: How can I build gettext 64 bit DLL on Windows
-    <http://stackoverflow.com/questions/19393336/
-    how-can-i-build-gettext-64bit-dll-on-windows/19402328#19402328>`__
+    <http://help.appveyor.com/discussions/suggestions/
+    615-support-for-msys2>`__
 -   `New mirrors for msys2
     <https://github.com/Alexpux/MINGW-packages/issues/702
     #issuecomment-125041746>`__
