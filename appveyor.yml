@@ -43,12 +43,12 @@ after_build: # package libintl-8.dll
   - "C:\\msys64\\usr\\bin\\sh --login -c \"
       cd $APPVEYOR_BUILD_FOLDER &&
       cp ${gettext}/gettext-runtime/intl/.libs/libintl-8.dll . &&
-      > sha1.txt openssl sha1 libintl-8.dll
+      > release.sha256 sha256sum libintl-8.dll
     \""
 
 artifacts:
   - path: libintl-8.dll
-  - path: sha1.txt
+  - path: release.sha256
 
 on_failure:
   - ps: "$blockRdp = $true; iex ((new-object net.webclient).DownloadString((\
