@@ -13,6 +13,12 @@ if not exist %mirrors% (
 	|| goto :error
 )
 7z x -oC:\ %msys2% > nul || goto :error
+C:\msys64\usr\bin\cygpath.exe -u %APPVEYOR_BUILD_FOLDER% > work_directory ^
+|| goto :error
+set /P work_directory= < work_directory || goto :error
+del work_directory || goto :error
+echo cd "%work_directory%" >> C:\msys64\etc\profile || goto :error
+set work_directory= || goto error
 set MSYSTEM=MSYS2 || goto :error
 (
 echo cd "${APPVEYOR_BUILD_FOLDER}" ^^^&^^^&

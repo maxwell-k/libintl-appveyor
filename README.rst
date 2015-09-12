@@ -56,3 +56,6 @@ References
 -   `update-core
     <https://github.com/Alexpux/MSYS2-pacman/blob/master/
     scripts/update-core.sh.in>`__
+-   `Escape double quotes with cmd.exe
+    <http://stackoverflow.com/questions/7760545/
+    cmd-escape-double-quotes-in-parameter/15262019#15262019>`__

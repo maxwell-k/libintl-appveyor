@@ -33,7 +33,7 @@ build_script: # extract and build parts of gettext
   - 7z x %gettext%.tar > nul
   - set MSYSTEM=MINGW64
   - "C:\\msys64\\usr\\bin\\sh --login -c >nul 2>&1 \"exec 0</dev/null &&
-      cd $APPVEYOR_BUILD_FOLDER/$gettext &&
+      cd \"\"\"${gettext}\"\"\" &&
       ./configure &&
       make -C gettext-runtime/intl
     \""
@@ -41,8 +41,9 @@ build_script: # extract and build parts of gettext
 
 after_build: # package libintl-8.dll
   - "C:\\msys64\\usr\\bin\\sh --login -c \"
-      cd $APPVEYOR_BUILD_FOLDER &&
-      cp ${gettext}/gettext-runtime/intl/.libs/libintl-8.dll . &&
+      cd \"\"\"${gettext}\"\"\" &&
+      cp gettext-runtime/intl/.libs/libintl-8.dll .. &&
+      cd .. &&
       > release.sha256 sha256sum libintl-8.dll
     \""
 
