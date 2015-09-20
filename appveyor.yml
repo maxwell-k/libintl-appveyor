@@ -9,7 +9,6 @@ environment:
 cache:
   - '%gettext%.tar'
   - '%mirrors%'
-  - C:\msys64\var\cache\pacman\pkg
 
 init: # Simplify the PATH variable
   - "set PATH=\
