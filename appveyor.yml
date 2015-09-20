@@ -12,38 +12,40 @@ cache:
   - C:\msys64\var\cache\pacman\pkg
 
 init: # Simplify the PATH variable
-  - "set PATH=%SystemRoot%\\system32;%SystemRoot%;\
-    %SystemRoot%\\System32\\Wbem;\
-    C:\\Program Files\\7-Zip;\
-    C:\\Program Files (x86)\\Git\\cmd;\
-    C:\\Program Files\\AppVeyor\\BuildAgent"
+  - "set PATH=\
+      ;%SystemRoot%\\system32\
+      ;%SystemRoot%\
+      ;%SystemRoot%\\System32\\Wbem\
+      ;C:\\Program Files\\7-Zip\
+      ;C:\\Program Files (x86)\\Git\\cmd\
+      ;C:\\Program Files\\AppVeyor\\BuildAgent\
+      ;C:\\msys64\\usr\\bin\
+    "
 
 install:
   - .\msys2.bat
+
+before_build: # Download content
   - "if not exist %gettext%.tar (
       appveyor DownloadFile
       http://ftp.gnu.org/pub/gnu/gettext/%gettext%.tar.xz &&
       7z x %gettext%.tar.xz > nul &&
       del %gettext%.tar.xz
     )"
-
-build_script: # extract and build parts of gettext
   - 7z x %gettext%.tar > nul
+
+build_script: # Build libintl with MSYS2
   - set MSYSTEM=MINGW64
-  - "C:\\msys64\\usr\\bin\\sh --login -c >nul 2>&1 \"exec 0</dev/null &&
+  - "sh --login -c >nul 2>&1 \"exec 0</dev/null &&
       cd \"\"\"${gettext}\"\"\" &&
       ./configure &&
       make -C gettext-runtime/intl
     \""
   - set MSYSTEM=
 
-after_build: # package libintl-8.dll
-  - "C:\\msys64\\usr\\bin\\sh --login -c \"
-      cd \"\"\"${gettext}\"\"\" &&
-      cp gettext-runtime/intl/.libs/libintl-8.dll .. &&
-      cd .. &&
-      > release.sha256 sha256sum libintl-8.dll
-    \""
+after_build: # Package libintl-8.dll
+  - copy %gettext%\gettext-runtime/intl/.libs/libintl-8.dll ..
+  - sh --login -c "sha256sum libintl-8.dll > release.sha256"
 
 artifacts:
   - path: libintl-8.dll
