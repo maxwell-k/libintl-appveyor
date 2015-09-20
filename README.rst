@@ -31,9 +31,13 @@ References
     <http://sourceforge.net/p/msys2/wiki/MSYS2%20installation/>`__
 -   `pacman man page
     <https://www.archlinux.org/pacman/pacman.8.html>`__
--   `Support request
+-   `Support request for MSYS2
     <http://help.appveyor.com/discussions/suggestions/
     615-support-for-msys2>`__
+-   `Appveyor issue to add MSYS2
+    <https://github.com/appveyor/ci/issues/352>`__
+-   `AppVeyor list of installed software
+    <http://www.appveyor.com/docs/installed-software#mingw-msys-cygwin>`__
 -   `New mirrors for msys2
     <https://github.com/Alexpux/MINGW-packages/issues/702
     #issuecomment-125041746>`__

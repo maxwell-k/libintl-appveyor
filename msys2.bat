@@ -1,18 +1,9 @@
-if not defined msys2 goto :error
 if not defined mirrors goto :error
 if not defined APPVEYOR_BUILD_FOLDER goto :error
-if not exist %msys2% (
-	appveyor DownloadFile ^
-	http://downloads.sourceforge.net/project/msys2/Base/x86_64/%msys2%.xz ^
-	|| goto :error
-	7z x %msys2%.xz > nul || goto :error
-	del %msys2%.xz || goto :error
-)
 if not exist %mirrors% (
 	appveyor DownloadFile http://repo.msys2.org/msys/x86_64/%mirrors% ^
 	|| goto :error
 )
-7z x -oC:\ %msys2% > nul || goto :error
 C:\msys64\usr\bin\cygpath.exe -u %APPVEYOR_BUILD_FOLDER% > work_directory ^
 || goto :error
 set /P work_directory= < work_directory || goto :error

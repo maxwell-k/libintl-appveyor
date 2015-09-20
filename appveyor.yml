@@ -5,11 +5,9 @@ skip_tags: true
 environment:
   gettext: gettext-0.19.5.1
   mirrors: pacman-mirrors-20150722-2-any.pkg.tar.xz
-  msys2: msys2-base-x86_64-20150512.tar
 
 cache:
   - '%gettext%.tar'
-  - '%msys2%'
   - '%mirrors%'
   - C:\msys64\var\cache\pacman\pkg
 
