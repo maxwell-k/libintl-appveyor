@@ -63,3 +63,12 @@ References
 -   `Escape double quotes with cmd.exe
     <http://stackoverflow.com/questions/7760545/
     cmd-escape-double-quotes-in-parameter/15262019#15262019>`__
+-   `AppVeyor problem with GitHub releases
+    <http://help.appveyor.com/discussions/problems/
+    3008-artifacts-cant-uploaded-to-github-release-400-bad-request>`__
+-   `AppVeyor issue about GitHub releases
+    <https://github.com/appveyor/ci/issues/411>`__
+-   `AppVeyor changelog fixing issue about GitHub releases
+    <https://github.com/appveyor/website/commit/
+    3e45aad6e7ba839b342ca51d48e4fc18d6b82a1d
+    #diff-4649c78283f4552aece9eefd18f80153R26>`__

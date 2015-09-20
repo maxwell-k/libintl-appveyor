@@ -54,13 +54,12 @@ on_failure:
       'https://raw.githubusercontent.com/appveyor/ci/master/scripts/\
       enable-rdp.ps1')))"
 
-# Temporarily disable artifact upload
-# deploy:
-#   release: $(APPVEYOR_BUILD_VERSION)
-#   description: "[AppVeyor build](https://ci.appveyor.com/project/\
-#     $(APPVEYOR_REPO_NAME)/build/$(APPVEYOR_BUILD_VERSION))"
-#   provider: GitHub
-#   draft: true
-#   on: { appveyor_repo_tag: false }
-#   auth_token:
-#     secure: qty+OleXdcHipnzD0RGUfPbTpe5Q9WtPvIknOFhkaIzQ28ccEsMU1mKSKQ2lnLUn
+deploy:
+  release: $(APPVEYOR_BUILD_VERSION)
+  description: "[AppVeyor build](https://ci.appveyor.com/project/\
+    $(APPVEYOR_REPO_NAME)/build/$(APPVEYOR_BUILD_VERSION))"
+  provider: GitHub
+  draft: true
+  on: { appveyor_repo_tag: false }
+  auth_token:
+    secure: qty+OleXdcHipnzD0RGUfPbTpe5Q9WtPvIknOFhkaIzQ28ccEsMU1mKSKQ2lnLUn
