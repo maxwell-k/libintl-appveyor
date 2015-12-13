@@ -16,7 +16,7 @@ init: # Simplify the PATH variable
       ;%SystemRoot%\
       ;%SystemRoot%\\System32\\Wbem\
       ;C:\\Program Files\\7-Zip\
-      ;C:\\Program Files (x86)\\Git\\cmd\
+      ;C:\\Program Files\\Git\\cmd\
       ;C:\\Program Files\\AppVeyor\\BuildAgent\
       ;C:\\msys64\\usr\\bin\
     "
