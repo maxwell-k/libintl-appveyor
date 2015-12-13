@@ -1,10 +1,11 @@
-version: "0.19.5.1.{build}"
-
 skip_tags: true
 
 environment:
   gettext: gettext-0.19.5.1
-  mirrors: pacman-mirrors-20150722-2-any.pkg.tar.xz
+  # TODO: upgrade to 0.19.6 http://ftp.gnu.org/pub/gnu/gettext/
+  mirrors: pacman-mirrors-20150722-2-any.pkg.tar.xz # used in .\msys2.bat
+
+version: "$(gettext)+{build}"
 
 cache:
   - '%gettext%.tar'
@@ -43,12 +44,12 @@ build_script: # Build libintl with MSYS2
   - set MSYSTEM=
 
 after_build: # Package libintl-8.dll
-  - copy %gettext%\gettext-runtime/intl/.libs/libintl-8.dll ..
-  - sh --login -c "sha256sum libintl-8.dll > release.sha256"
+  - copy %gettext%\gettext-runtime\intl\.libs\libintl-8.dll .
+  - sh --login -c "sha256sum libintl-8.dll > libintl-8.dll.sha256"
 
 artifacts:
   - path: libintl-8.dll
-  - path: release.sha256
+  - path: libintl-8.dll.sha256
 
 on_failure:
   - ps: "$blockRdp = $true; iex ((new-object net.webclient).DownloadString((\
