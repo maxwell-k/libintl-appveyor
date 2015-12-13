@@ -1,8 +1,7 @@
 skip_tags: true
 
 environment:
-  gettext: gettext-0.19.5.1
-  # TODO: upgrade to 0.19.6 http://ftp.gnu.org/pub/gnu/gettext/
+  gettext: gettext-0.19.6
   mirrors: pacman-mirrors-20150722-2-any.pkg.tar.xz # used in .\msys2.bat
 
 version: "$(gettext)+{build}"
