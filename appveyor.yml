@@ -1,7 +1,7 @@
 skip_tags: true
 
 environment:
-  gettext: gettext-0.19.6
+  gettext: gettext-0.19.6 # TODO: version bump to 0.19.7 released 27 December
   mirrors: pacman-mirrors-20150722-2-any.pkg.tar.xz # used in .\msys2.bat
 
 version: "$(gettext)+{build}"
@@ -12,7 +12,7 @@ cache:
 
 init: # Simplify the PATH variable
   - "set PATH=\
-      ;%SystemRoot%\\system32\
+      %SystemRoot%\\system32\
       ;%SystemRoot%\
       ;%SystemRoot%\\System32\\Wbem\
       ;C:\\Program Files\\7-Zip\
@@ -37,7 +37,7 @@ build_script: # Build libintl with MSYS2
   - set MSYSTEM=MINGW64
   - "sh --login -c >nul 2>&1 \"exec 0</dev/null &&
       cd \"\"\"${gettext}\"\"\" &&
-      ./configure &&
+      ./configure --enable-threads=windows &&
       make -C gettext-runtime/intl
     \""
   - set MSYSTEM=
