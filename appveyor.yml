@@ -1,7 +1,7 @@
 skip_tags: true
 
 environment:
-  gettext: gettext-0.19.6 # TODO: version bump to 0.19.7 released 27 December
+  gettext: gettext-0.19.7
   mirrors: pacman-mirrors-20150722-2-any.pkg.tar.xz # used in .\msys2.bat
 
 version: "$(gettext)+{build}"
