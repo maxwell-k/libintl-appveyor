@@ -72,3 +72,6 @@ References
     <https://github.com/appveyor/website/commit/
     3e45aad6e7ba839b342ca51d48e4fc18d6b82a1d
     #diff-4649c78283f4552aece9eefd18f80153R26>`__
+-   `How to check for DLL dependency
+    <http://stackoverflow.com/questions/7378959/
+    how-to-check-for-dll-dependency#28304716>`__
